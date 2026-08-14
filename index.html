@@ -96,6 +96,7 @@
   .s-title{font-size:clamp(30px,9.2vw,42px);font-weight:900;letter-spacing:-1px;line-height:1.22;margin:10px 0 12px}
   .s-title .gold{color:var(--gold);text-shadow:0 2px 0 #FDE68A}
   .s-sub2{font-size:15px;font-weight:800;color:var(--mut);margin-bottom:22px}
+  .s-eye2{display:inline-block;font-size:13.5px;font-weight:800;color:#4F46E5;background:#EEF2FF;border:1px solid #C7D2FE;border-radius:99px;padding:6px 15px;margin:2px 0 10px}
   .bgmath{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
   .bgmath span{position:absolute;font-family:ui-monospace,Menlo,monospace;font-weight:900;font-size:clamp(30px,11vw,52px);color:#D97706;opacity:.08;white-space:nowrap}
   #start>:not(.bgmath){position:relative;z-index:1}
@@ -135,6 +136,7 @@
       <span style="top:80%;right:8%;transform:rotate(-6deg)">12−4</span>
     </div>
     <div class="emo">🧠</div>
+    <div class="s-eye2">두뇌 테스트! 내 연산능력은?</div>
     <h1 class="s-title">덧셈뺄셈하고<br><span class="gold">10,000원</span> 받기</h1>
     <div class="s-sub2">쉬운 덧셈·뺄셈만 나와요 💰</div>
     <div class="s-proof">🔥 지금 <b>3,127명</b> 도전 중</div>
@@ -146,7 +148,7 @@
     <div class="rlabel" id="rLabel">1단계 클리어 · 적립!</div>
     <div class="rplus" id="rPlus">+100원</div>
     <div class="rtot">지금까지 <b id="rTot">100원</b></div>
-    <button class="cta big" id="rNext">다음 단계도 풀고 200원 받기 →</button>
+    <button class="cta big" id="rNext">한 문제 더 풀고 300원 받기 →</button>
     <button class="quit" id="rQuit">그만두기</button>
   </div>
 
@@ -249,7 +251,7 @@ function showReward(){
     $('rNext').textContent='🏆 완료! '+total.toLocaleString()+'원 받기';
     $('rNext').onclick=quit; $('rQuit').style.display='none';
   }else{
-    $('rNext').textContent='다음 단계도 풀고 '+PTS[si+1].toLocaleString()+'원 받기 →';
+    $('rNext').textContent='한 문제 더 풀고 '+(total+PTS[si+1]).toLocaleString()+'원 받기 →';
     $('rNext').onclick=goNext; $('rQuit').style.display='';
   }
   $('reward').classList.add('show');
