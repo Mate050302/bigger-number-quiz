@@ -93,6 +93,12 @@
   .s-brain{font-size:28px;font-weight:900;letter-spacing:-.7px;margin:10px 0 12px;line-height:1.26}
   .s-sub{font-size:15px;font-weight:800;color:var(--ink);margin:8px 0 2px}
   .s-sub .easy{color:var(--green)}
+  .s-title{font-size:clamp(30px,9.2vw,42px);font-weight:900;letter-spacing:-1px;line-height:1.22;margin:10px 0 12px}
+  .s-title .gold{color:var(--gold);text-shadow:0 2px 0 #FDE68A}
+  .s-sub2{font-size:15px;font-weight:800;color:var(--mut);margin-bottom:22px}
+  .bgmath{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+  .bgmath span{position:absolute;font-family:ui-monospace,Menlo,monospace;font-weight:900;font-size:clamp(30px,11vw,52px);color:#D97706;opacity:.08;white-space:nowrap}
+  #start>:not(.bgmath){position:relative;z-index:1}
   /* 정답 칭찬 멘트 */
   .praise{position:absolute;left:0;right:0;top:34%;text-align:center;z-index:25;font-size:30px;font-weight:900;color:var(--blue);opacity:0;pointer-events:none;text-shadow:0 2px 8px #fff}
   .praise.show{animation:praisepop 1s ease}
@@ -120,14 +126,19 @@
   <div class="praise" id="praise"></div>
 
   <div class="screen show" id="start">
+    <div class="bgmath" aria-hidden="true">
+      <span style="top:9%;left:7%;transform:rotate(-8deg)">3+4</span>
+      <span style="top:16%;right:6%;transform:rotate(7deg)">10−2</span>
+      <span style="top:32%;left:3%;transform:rotate(6deg)">8+6</span>
+      <span style="top:41%;right:3%;transform:rotate(-7deg)">15−7</span>
+      <span style="top:69%;left:8%;transform:rotate(5deg)">9+5</span>
+      <span style="top:80%;right:8%;transform:rotate(-6deg)">12−4</span>
+    </div>
     <div class="emo">🧠</div>
-    <div class="s-eye">1분 두뇌 테스트 · 덧셈 · 뺄셈</div>
-    <h1 class="s-brain">내 두뇌 능력은<br>어떨까?</h1>
-    <div class="s-amt">10,000원</div>
-    <div class="s-sub"><span class="easy">쉬운 덧셈·뺄셈</span>만 맞히면 받는다 💰</div>
-    <div class="s-proof">🔥 지금 <b>3,127명</b> 두뇌 테스트 중</div>
-    <button class="cta big" style="max-width:300px" onclick="start()">지금 두뇌 테스트 시작 →</button>
-    <div class="s-trust">무료 · 가입 없이 · 1분이면 끝</div>
+    <h1 class="s-title">덧셈뺄셈하고<br><span class="gold">10,000원</span> 받기</h1>
+    <div class="s-sub2">쉬운 덧셈·뺄셈만 나와요 💰</div>
+    <div class="s-proof">🔥 지금 <b>3,127명</b> 도전 중</div>
+    <button class="cta big" style="max-width:300px" onclick="start()">시작하기</button>
   </div>
 
   <div class="screen" id="reward">
