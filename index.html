@@ -63,6 +63,15 @@
   @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.035)}}
   .quit{background:none;border:none;color:#CBD0D6;font-size:12px;font-weight:500;margin-top:26px;cursor:pointer;text-decoration:underline}
   .quit:active{color:#AEB4BB}
+  /* share gate (틀렸을 때) */
+  #share{background:radial-gradient(120% 80% at 50% 0%, #FFF7ED 0%, var(--card) 55%)}
+  .shead{font-size:22px;font-weight:900;letter-spacing:-.5px;margin-bottom:16px}
+  .skeep{font-size:14px;color:var(--mut);font-weight:700}
+  .sptsbig{font-size:60px;font-weight:900;color:var(--gold);letter-spacing:-2.5px;line-height:1;margin-top:2px;text-shadow:0 2px 0 #FDE68A}
+  .swarn{font-size:14.5px;color:var(--red);font-weight:800;margin:18px 0 24px;line-height:1.55}
+  .cta.share{background:linear-gradient(90deg,#2563EB,#4F46E5);box-shadow:0 7px 0 #1E3A8A;font-size:18px;padding:21px 16px;animation:pulse 1.35s ease-in-out infinite}
+  .cta.share:active{transform:translateY(4px);box-shadow:0 3px 0 #1E3A8A;animation:none}
+  .cta.share:disabled{background:var(--green);box-shadow:0 7px 0 #15803D;animation:none;opacity:1}
 </style>
 </head>
 <body>
@@ -98,6 +107,16 @@
     <div class="rtot">지금까지 <b id="rTot">100P</b></div>
     <button class="cta big" id="rNext">다음 단계도 풀고 200P 받기 →</button>
     <button class="quit" id="rQuit">그만두기</button>
+  </div>
+
+  <div class="screen" id="share">
+    <div class="emo">😮</div>
+    <div class="shead">아깝다! 한 끗 차이</div>
+    <div class="skeep">지금까지 모은 포인트</div>
+    <div class="sptsbig" id="sPts">0P</div>
+    <div class="swarn">지금 나가면 전부 사라져요 😱<br>공유하고 이어서 <b>지키세요!</b></div>
+    <button class="cta share" id="sBtn">📤 공유하고 계속하기</button>
+    <button class="quit" id="sQuit">그만둘래요</button>
   </div>
 
   <div class="screen" id="final">
@@ -169,9 +188,8 @@ function resolve(side){
   $('optA').classList.add('reveal'); $('optB').classList.add('reveal');
   $(bigId).classList.add('correct');
   if(pickId && !ok) $(pickId).classList.add('wrong');
-  if(ok) correct++;
-  setPts(total+PTS[si]);            // 단계마다 적립 (참여 보상)
-  setTimeout(showReward, 1000);
+  if(ok){ correct++; setPts(total+PTS[si]); setTimeout(showReward,1000); }
+  else { setTimeout(showShare,1000); }   // 틀리면 공유 게이트 (포인트 적립 X)
 }
 function showReward(){
   const last=si===S.length-1;
@@ -188,8 +206,23 @@ function showReward(){
   $('reward').classList.add('show');
 }
 function goNext(){ $('reward').classList.remove('show'); si++; if(si<S.length) render(); else finish(); }
-function quit(){ $('reward').classList.remove('show'); finish(); }
+function quit(){ $('reward').classList.remove('show'); $('share').classList.remove('show'); finish(); }
 $('rQuit').onclick=quit;
+// 공유 게이트 (틀렸을 때)
+function showShare(){
+  $('sPts').textContent=total.toLocaleString()+'P';
+  $('sBtn').disabled=false; $('sBtn').textContent='📤 공유하고 계속하기';
+  $('share').classList.add('show');
+}
+function doShare(){
+  const url=location.href.split('?')[0];
+  const d={title:'더 큰 수 찾기',text:`나 ${total.toLocaleString()}P 모았어! 너도 더 큰 수 찾기 도전 🔥`,url};
+  try{ if(navigator.share){ navigator.share(d).catch(()=>{}); } else if(navigator.clipboard){ navigator.clipboard.writeText(d.text+' '+url).catch(()=>{}); } }catch(e){}
+  // 버튼 누르면 공유한 걸로 처리 → 바로 이어감
+  $('sBtn').disabled=true; $('sBtn').textContent='✅ 공유 완료! 이어가는 중…';
+  setTimeout(()=>{ $('share').classList.remove('show'); si++; if(si<S.length) render(); else finish(); },750);
+}
+$('sBtn').onclick=doShare; $('sQuit').onclick=quit;
 function finish(){
   drawDots();
   $('fCorrect').textContent=correct;
