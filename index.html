@@ -73,7 +73,10 @@
   .shead{font-size:22px;font-weight:900;letter-spacing:-.5px;margin-bottom:16px}
   .skeep{font-size:14px;color:var(--mut);font-weight:700}
   .sptsbig{font-size:60px;font-weight:900;color:var(--gold);letter-spacing:-2.5px;line-height:1;margin-top:2px;text-shadow:0 2px 0 #FDE68A}
-  .swarn{font-size:14.5px;color:var(--red);font-weight:800;margin:18px 0 24px;line-height:1.55}
+  .swarn{font-size:15px;color:var(--red);font-weight:800;margin:18px 0 12px;line-height:1.5}
+  .sgain{background:linear-gradient(90deg,#ECFDF5,#F0FDF4);border:1.5px solid #6EE7B7;border-radius:14px;padding:12px 16px;font-size:15px;font-weight:800;color:var(--ink);margin:0 0 24px;line-height:1.55}
+  .sgain .plus{color:var(--green);font-size:20px}
+  .sgain .goalamt{color:var(--gold);font-size:20px}
   .cta.share{background:linear-gradient(90deg,#2563EB,#4F46E5);box-shadow:0 7px 0 #1E3A8A;font-size:18px;padding:21px 16px;animation:pulse 1.35s ease-in-out infinite}
   .cta.share:active{transform:translateY(4px);box-shadow:0 3px 0 #1E3A8A;animation:none}
   .cta.share:disabled{background:#93A4C9;box-shadow:0 7px 0 #6B7FA8;animation:none;opacity:1}
@@ -141,7 +144,8 @@
     <div class="shead">아깝다! 한 끗 차이</div>
     <div class="skeep">지금까지 모은 금액</div>
     <div class="sptsbig" id="sPts">0원</div>
-    <div class="swarn">지금 나가면 전부 사라져요 😱<br>공유하고 이어서 <b>지키세요!</b></div>
+    <div class="swarn">지금 나가면 <b id="sLose">4,000원</b> 다 사라져요 😱</div>
+    <div class="sgain" id="sGain"></div>
     <button class="cta share" id="sBtn">📤 공유하고 계속하기</button>
     <button class="cta done" id="sDone" style="display:none">✅ 공유 완료 · 이어하기 →</button>
     <button class="quit" id="sQuit">그만둘래요</button>
@@ -245,6 +249,11 @@ $('rQuit').onclick=quit;
 // 공유 게이트 (틀렸을 때) — 공유하기 → OS 공유 모달 → 닫으면 '공유 완료' 버튼 노출 → 눌러야 진행
 function showShare(){
   $('sPts').textContent=total.toLocaleString()+'원';
+  $('sLose').textContent=total.toLocaleString()+'원';
+  const remain=GOALP-total, last=si===S.length-1;
+  $('sGain').innerHTML = last
+    ? `공유하고 <b class="goalamt">${total.toLocaleString()}원</b> 지키기 💰`
+    : `이어서 풀면 <b class="plus">+${remain.toLocaleString()}원</b> 더!<br>끝까지 가면 <b class="goalamt">10,000원</b> 💰`;
   $('sBtn').style.display=''; $('sBtn').disabled=false; $('sBtn').textContent='📤 공유하고 계속하기';
   $('sDone').style.display='none';
   $('share').classList.add('show');
