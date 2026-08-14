@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<title>더 큰 수 찾고 10,000원 받기</title>
+<title>내 두뇌 능력은? · 덧셈뺄셈하고 10,000원</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <style>
   :root{--blue:#2563EB;--blue-d:#1D4ED8;--red:#DC2626;--green:#16A34A;--ink:#111827;--mut:#6B7280;--line:#E5E7EB;--bg:#F3F4F6;--card:#FFFFFF;--gold:#D97706}
@@ -28,6 +28,11 @@
   .trow .sec.warn{color:var(--red)}
   .tbar{height:7px;background:var(--line);border-radius:99px;overflow:hidden}
   .tfill{height:100%;width:100%;background:var(--green);border-radius:99px;transition:width .1s linear,background .3s}
+  /* 이번 맞추면 얼마 (후킹 티저) */
+  .qtease{margin:14px 16px 2px;background:linear-gradient(90deg,#FFF7E6,#FEF3C7);border:1.5px solid #FCD34D;border-radius:14px;padding:11px 14px;text-align:center;font-size:15px;font-weight:800;color:var(--ink);box-shadow:0 3px 10px #F59E0B22;animation:teasepulse 1.8s ease-in-out infinite}
+  .qtease .plus{color:#D97706}
+  .qtease .tot{color:var(--gold);font-size:21px;letter-spacing:-.5px}
+  @keyframes teasepulse{0%,100%{transform:scale(1)}50%{transform:scale(1.025)}}
   /* question */
   .qwrap{flex:1;display:flex;flex-direction:column;justify-content:center;padding:6px 16px 12px;gap:12px}
   .ask{text-align:center;font-size:16px;font-weight:700;color:var(--mut)}
@@ -82,19 +87,26 @@
   .s-proof{font-size:13px;color:var(--mut);background:var(--bg);border:1px solid var(--line);border-radius:99px;padding:7px 15px;font-weight:700;margin-bottom:24px}
   .s-proof b{color:var(--red)}
   .s-trust{font-size:12px;color:#9CA3AF;margin-top:15px;font-weight:600}
+  .s-brain{font-size:28px;font-weight:900;letter-spacing:-.7px;margin:10px 0 12px;line-height:1.26}
+  .s-sub{font-size:15px;font-weight:800;color:var(--ink);margin:8px 0 2px}
+  .s-sub .easy{color:var(--green)}
+  /* 정답 칭찬 멘트 */
+  .praise{position:absolute;left:0;right:0;top:34%;text-align:center;z-index:25;font-size:30px;font-weight:900;color:var(--blue);opacity:0;pointer-events:none;text-shadow:0 2px 8px #fff}
+  .praise.show{animation:praisepop 1s ease}
+  @keyframes praisepop{0%{opacity:0;transform:translateY(16px) scale(.75)}18%{opacity:1;transform:translateY(0) scale(1.08)}70%{opacity:1;transform:scale(1)}100%{opacity:0;transform:translateY(-12px) scale(1)}}
 </style>
 </head>
 <body>
 <div class="app">
   <div class="top">
-    <div class="goal"><span class="lbl">🎯 더 큰 수 찾고 10,000원</span><span class="pts"><b id="pts">0</b><span class="g"> / 10,000원</span></span></div>
-    <div class="pbar"><div class="pfill" id="pfill"></div></div>
+    <div class="goal"><span class="lbl">🧠 두뇌 테스트 · 10,000원</span><span class="pts"><b id="pts">0</b><span class="g"> / 10,000원</span></span></div>
     <div class="dots" id="dots"></div>
   </div>
   <div class="timer">
     <div class="trow"><span class="stg" id="stg">1단계</span><span class="sec" id="sec">⏱ 20</span></div>
     <div class="tbar"><div class="tfill" id="tfill"></div></div>
   </div>
+  <div class="qtease" id="qTease"></div>
   <div class="qwrap">
     <div class="ask"><b>더 큰 수</b>를 고르세요</div>
     <div class="opt" id="optA" onclick="answer('L')"><span class="tag">A</span><div class="expr" id="exA">—</div><div class="val" id="vA"></div></div>
@@ -102,14 +114,17 @@
     <div class="opt" id="optB" onclick="answer('R')"><span class="tag">B</span><div class="expr" id="exB">—</div><div class="val" id="vB"></div></div>
   </div>
 
+  <div class="praise" id="praise"></div>
+
   <div class="screen show" id="start">
-    <div class="emo">💰</div>
-    <div class="s-eye">쉬운 숫자 문제 10개 · 1분 컷</div>
+    <div class="emo">🧠</div>
+    <div class="s-eye">1분 두뇌 테스트 · 덧셈 · 뺄셈</div>
+    <h1 class="s-brain">내 두뇌 능력은<br>어떨까?</h1>
     <div class="s-amt">10,000원</div>
-    <h1 class="s-h1">더 큰 수만 고르면<br>바로 받는다!</h1>
-    <div class="s-proof">🔥 지금 <b>3,127명</b> 도전 중</div>
-    <button class="cta big" style="max-width:300px" onclick="start()">지금 받으러 가기 →</button>
-    <div class="s-trust">무료 · 가입 없이 바로 시작</div>
+    <div class="s-sub"><span class="easy">쉬운 덧셈·뺄셈</span>만 맞히면 받는다 💰</div>
+    <div class="s-proof">🔥 지금 <b>3,127명</b> 두뇌 테스트 중</div>
+    <button class="cta big" style="max-width:300px" onclick="start()">지금 두뇌 테스트 시작 →</button>
+    <div class="s-trust">무료 · 가입 없이 · 1분이면 끝</div>
   </div>
 
   <div class="screen" id="reward">
@@ -162,13 +177,14 @@ let si=0,total=0,correct=0,locked=false,tId=null,left=TLIMIT;
 const $=id=>document.getElementById(id);
 
 function drawDots(){$('dots').innerHTML=S.map((_,i)=>`<div class="d ${i<si?'done':i===si?'on':''}"></div>`).join('');}
-function setPts(v){total=v;$('pts').textContent=v.toLocaleString();$('pfill').style.width=Math.min(100,v/GOALP*100)+'%';}
+function setPts(v){total=v;$('pts').textContent=v.toLocaleString();}
 function start(){$('start').classList.remove('show');render();}
 
 function render(){
   drawDots();
   const q=S[si];
   $('stg').textContent=(si+1)+'단계';
+  $('qTease').innerHTML=`이번 맞추면 <span class="plus">+${PTS[si].toLocaleString()}원</span> → 총 <span class="tot">${(total+PTS[si]).toLocaleString()}원</span> 💰`;
   $('exA').textContent=q.l; $('exB').textContent=q.r;
   $('exA').className='expr'+(q.l.length>13?' long':''); $('exB').className='expr'+(q.r.length>13?' long':'');
   $('vA').textContent='= '+q.lv; $('vB').textContent='= '+q.rv;
@@ -201,8 +217,13 @@ function resolve(side){
   $('optA').classList.add('reveal'); $('optB').classList.add('reveal');
   $(bigId).classList.add('correct');
   if(pickId && !ok) $(pickId).classList.add('wrong');
-  if(ok){ correct++; setPts(total+PTS[si]); setTimeout(showReward,1000); }
+  if(ok){ correct++; setPts(total+PTS[si]); showPraise(); setTimeout(showReward,1100); }
   else { setTimeout(showShare,1000); }   // 틀리면 공유 게이트 (포인트 적립 X)
+}
+const PRAISE=["와 잘하는데! 🎉","천재인데?! 🧠","두뇌 팽팽! ⚡","완벽해요! 👏","계산왕 등극 👑","머리 회전 빠르다 💫","눈썰미 최고! 👀","척척박사 인정 🎓"];
+function showPraise(){
+  const el=$('praise'); el.textContent=PRAISE[Math.floor(Math.random()*PRAISE.length)];
+  el.classList.remove('show'); void el.offsetWidth; el.classList.add('show');
 }
 function showReward(){
   const last=si===S.length-1;
