@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<title>더 큰 수 찾기 · 20,000P 받기</title>
+<title>더 큰 수 찾고 10,000원 받기</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <style>
   :root{--blue:#2563EB;--blue-d:#1D4ED8;--red:#DC2626;--green:#16A34A;--ink:#111827;--mut:#6B7280;--line:#E5E7EB;--bg:#F3F4F6;--card:#FFFFFF;--gold:#D97706}
@@ -71,13 +71,23 @@
   .swarn{font-size:14.5px;color:var(--red);font-weight:800;margin:18px 0 24px;line-height:1.55}
   .cta.share{background:linear-gradient(90deg,#2563EB,#4F46E5);box-shadow:0 7px 0 #1E3A8A;font-size:18px;padding:21px 16px;animation:pulse 1.35s ease-in-out infinite}
   .cta.share:active{transform:translateY(4px);box-shadow:0 3px 0 #1E3A8A;animation:none}
-  .cta.share:disabled{background:var(--green);box-shadow:0 7px 0 #15803D;animation:none;opacity:1}
+  .cta.share:disabled{background:#93A4C9;box-shadow:0 7px 0 #6B7FA8;animation:none;opacity:1}
+  .cta.done{background:linear-gradient(90deg,#16A34A,#15803D);box-shadow:0 7px 0 #14532D;font-size:18px;padding:21px 16px;animation:pulse 1.2s ease-in-out infinite}
+  .cta.done:active{transform:translateY(4px);box-shadow:0 3px 0 #14532D;animation:none}
+  /* 첫 페이지 후킹 */
+  #start{background:radial-gradient(120% 70% at 50% 0%, #FFF7E6 0%, var(--card) 60%)}
+  .s-eye{font-size:13px;color:var(--mut);font-weight:700;margin-bottom:8px}
+  .s-amt{font-size:clamp(52px,17vw,72px);font-weight:900;color:var(--gold);letter-spacing:-3px;line-height:1;text-shadow:0 3px 0 #FCD34D;margin:2px 0}
+  .s-h1{font-size:24px;font-weight:900;letter-spacing:-.6px;margin:12px 0 16px;line-height:1.32;text-wrap:balance}
+  .s-proof{font-size:13px;color:var(--mut);background:var(--bg);border:1px solid var(--line);border-radius:99px;padding:7px 15px;font-weight:700;margin-bottom:24px}
+  .s-proof b{color:var(--red)}
+  .s-trust{font-size:12px;color:#9CA3AF;margin-top:15px;font-weight:600}
 </style>
 </head>
 <body>
 <div class="app">
   <div class="top">
-    <div class="goal"><span class="lbl">🎯 더 큰 수 찾기</span><span class="pts"><b id="pts">0</b><span class="g"> / 16,800P</span></span></div>
+    <div class="goal"><span class="lbl">🎯 더 큰 수 찾고 10,000원</span><span class="pts"><b id="pts">0</b><span class="g"> / 10,000원</span></span></div>
     <div class="pbar"><div class="pfill" id="pfill"></div></div>
     <div class="dots" id="dots"></div>
   </div>
@@ -93,29 +103,32 @@
   </div>
 
   <div class="screen show" id="start">
-    <div class="emo">🔢</div>
-    <h1>더 큰 수 찾기</h1>
-    <p>두 식 중 <b>더 큰 쪽</b>을 고르세요.<br>단계마다 <b>20초</b> · 뒤로 갈수록 어려워집니다.</p>
-    <p style="font-size:13.5px;margin-top:10px">단계마다 포인트 적립 · 다 풀면 <b style="color:var(--gold)">16,800P</b></p>
-    <button class="cta" style="margin-top:18px" onclick="start()">시작하기</button>
+    <div class="emo">💰</div>
+    <div class="s-eye">쉬운 숫자 문제 10개 · 1분 컷</div>
+    <div class="s-amt">10,000원</div>
+    <h1 class="s-h1">더 큰 수만 고르면<br>바로 받는다!</h1>
+    <div class="s-proof">🔥 지금 <b>3,127명</b> 도전 중</div>
+    <button class="cta big" style="max-width:300px" onclick="start()">지금 받으러 가기 →</button>
+    <div class="s-trust">무료 · 가입 없이 바로 시작</div>
   </div>
 
   <div class="screen" id="reward">
     <div class="emo">🎉</div>
     <div class="rlabel" id="rLabel">1단계 클리어 · 적립!</div>
-    <div class="rplus" id="rPlus">+100P</div>
-    <div class="rtot">지금까지 <b id="rTot">100P</b></div>
-    <button class="cta big" id="rNext">다음 단계도 풀고 200P 받기 →</button>
+    <div class="rplus" id="rPlus">+100원</div>
+    <div class="rtot">지금까지 <b id="rTot">100원</b></div>
+    <button class="cta big" id="rNext">다음 단계도 풀고 200원 받기 →</button>
     <button class="quit" id="rQuit">그만두기</button>
   </div>
 
   <div class="screen" id="share">
     <div class="emo">😮</div>
     <div class="shead">아깝다! 한 끗 차이</div>
-    <div class="skeep">지금까지 모은 포인트</div>
-    <div class="sptsbig" id="sPts">0P</div>
+    <div class="skeep">지금까지 모은 금액</div>
+    <div class="sptsbig" id="sPts">0원</div>
     <div class="swarn">지금 나가면 전부 사라져요 😱<br>공유하고 이어서 <b>지키세요!</b></div>
     <button class="cta share" id="sBtn">📤 공유하고 계속하기</button>
+    <button class="cta done" id="sDone" style="display:none">✅ 공유 완료 · 이어하기 →</button>
     <button class="quit" id="sQuit">그만둘래요</button>
   </div>
 
@@ -123,7 +136,7 @@
     <div class="emo" id="fEmo">🏁</div>
     <h1 id="fTitle">완료!</h1>
     <p id="fSub">10문제 중 <b id="fCorrect">0</b>개 정답</p>
-    <div class="tot">획득 포인트<br><b id="fPts">0P</b></div>
+    <div class="tot">획득 금액<br><b id="fPts">0원</b></div>
     <button class="cta" onclick="location.reload()">다시하기</button>
   </div>
 </div>
@@ -142,8 +155,8 @@ const S=[
  {l:"(5×10)+43−18",r:"(7×10)+30−12",lv:75,rv:88,big:"R"},
  {l:"10+9+8+6+5−4+3−2−1",r:"10−9+8+7+6−5+4−3+2+1",lv:34,rv:21,big:"L"},
 ];
-const PTS=[100,200,300,400,500,600,700,2000,4000,8000]; // 합 = 16,800
-const GOALP=16800;
+const PTS=[100,200,300,400,500,600,900,1000,2000,4000]; // 합 = 10,000
+const GOALP=10000;
 const TLIMIT=20;
 let si=0,total=0,correct=0,locked=false,tId=null,left=TLIMIT;
 const $=id=>document.getElementById(id);
@@ -194,13 +207,13 @@ function resolve(side){
 function showReward(){
   const last=si===S.length-1;
   $('rLabel').textContent=(si+1)+'단계 클리어 · 적립!';
-  $('rPlus').textContent='+'+PTS[si].toLocaleString()+'P';
-  $('rTot').textContent=total.toLocaleString()+'P';
+  $('rPlus').textContent='+'+PTS[si].toLocaleString()+'원';
+  $('rTot').textContent=total.toLocaleString()+'원';
   if(last){
-    $('rNext').textContent='🏆 완료! '+total.toLocaleString()+'P 받기';
+    $('rNext').textContent='🏆 완료! '+total.toLocaleString()+'원 받기';
     $('rNext').onclick=quit; $('rQuit').style.display='none';
   }else{
-    $('rNext').textContent='다음 단계도 풀고 '+PTS[si+1].toLocaleString()+'P 받기 →';
+    $('rNext').textContent='다음 단계도 풀고 '+PTS[si+1].toLocaleString()+'원 받기 →';
     $('rNext').onclick=goNext; $('rQuit').style.display='';
   }
   $('reward').classList.add('show');
@@ -208,27 +221,30 @@ function showReward(){
 function goNext(){ $('reward').classList.remove('show'); si++; if(si<S.length) render(); else finish(); }
 function quit(){ $('reward').classList.remove('show'); $('share').classList.remove('show'); finish(); }
 $('rQuit').onclick=quit;
-// 공유 게이트 (틀렸을 때)
+// 공유 게이트 (틀렸을 때) — 공유하기 → OS 공유 모달 → 닫으면 '공유 완료' 버튼 노출 → 눌러야 진행
 function showShare(){
-  $('sPts').textContent=total.toLocaleString()+'P';
-  $('sBtn').disabled=false; $('sBtn').textContent='📤 공유하고 계속하기';
+  $('sPts').textContent=total.toLocaleString()+'원';
+  $('sBtn').style.display=''; $('sBtn').disabled=false; $('sBtn').textContent='📤 공유하고 계속하기';
+  $('sDone').style.display='none';
   $('share').classList.add('show');
 }
 function doShare(){
   const url=location.href.split('?')[0];
-  const d={title:'더 큰 수 찾기',text:`나 ${total.toLocaleString()}P 모았어! 너도 더 큰 수 찾기 도전 🔥`,url};
-  try{ if(navigator.share){ navigator.share(d).catch(()=>{}); } else if(navigator.clipboard){ navigator.clipboard.writeText(d.text+' '+url).catch(()=>{}); } }catch(e){}
-  // 버튼 누르면 공유한 걸로 처리 → 바로 이어감
-  $('sBtn').disabled=true; $('sBtn').textContent='✅ 공유 완료! 이어가는 중…';
-  setTimeout(()=>{ $('share').classList.remove('show'); si++; if(si<S.length) render(); else finish(); },750);
+  const d={title:'더 큰 수 찾고 10,000원 받기',text:`나 ${total.toLocaleString()}원 모았어! 너도 도전 🔥`,url};
+  const reveal=()=>{ $('sBtn').style.display='none'; $('sDone').style.display=''; };
+  try{
+    if(navigator.share){ $('sBtn').disabled=true; $('sBtn').textContent='공유 창 열림…'; navigator.share(d).then(reveal).catch(reveal); }
+    else{ if(navigator.clipboard) navigator.clipboard.writeText(d.text+' '+url).catch(()=>{}); reveal(); }
+  }catch(e){ reveal(); }
 }
-$('sBtn').onclick=doShare; $('sQuit').onclick=quit;
+function shareDone(){ $('share').classList.remove('show'); si++; if(si<S.length) render(); else finish(); }
+$('sBtn').onclick=doShare; $('sDone').onclick=shareDone; $('sQuit').onclick=quit;
 function finish(){
   drawDots();
   $('fCorrect').textContent=correct;
-  $('fPts').textContent=total.toLocaleString()+'P';
+  $('fPts').textContent=total.toLocaleString()+'원';
   $('fEmo').textContent = correct===10?'🏆': correct>=7?'🎉':'🏁';
-  $('fTitle').textContent = correct===10?'전부 정답! 20,000P!': '완료!';
+  $('fTitle').textContent = correct===10?'전부 정답! 10,000원!': '완료!';
   $('final').classList.add('show');
 }
 drawDots();
