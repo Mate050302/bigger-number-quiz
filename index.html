@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>더 큰 수 찾기 · 20,000P 받기</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<style>
+  :root{--blue:#2563EB;--blue-d:#1D4ED8;--red:#DC2626;--green:#16A34A;--ink:#111827;--mut:#6B7280;--line:#E5E7EB;--bg:#F3F4F6;--card:#FFFFFF;--gold:#D97706}
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;height:100%}
+  body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Segoe UI",system-ui,sans-serif;display:flex;justify-content:center}
+  .app{width:100%;max-width:440px;min-height:100dvh;background:var(--card);display:flex;flex-direction:column;position:relative;overflow:hidden}
+  .top{padding:16px 18px 12px;border-bottom:1px solid var(--line)}
+  .goal{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:9px}
+  .goal .lbl{font-size:13px;color:var(--mut);font-weight:600}
+  .goal .pts{font-size:20px;font-weight:800;letter-spacing:-.5px}
+  .goal .pts b{color:var(--gold)} .goal .pts .g{color:var(--mut);font-weight:600;font-size:14px}
+  .pbar{height:8px;background:var(--line);border-radius:99px;overflow:hidden}
+  .pfill{height:100%;background:linear-gradient(90deg,#F59E0B,#D97706);width:0;transition:width .5s cubic-bezier(.2,.8,.2,1)}
+  .dots{display:flex;gap:5px;margin-top:11px}
+  .dots .d{flex:1;height:6px;border-radius:99px;background:var(--line)}
+  .dots .d.done{background:var(--gold)} .dots .d.on{background:var(--ink)}
+  /* timer */
+  .timer{padding:14px 18px 4px}
+  .trow{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+  .trow .stg{font-size:15px;font-weight:800}
+  .trow .sec{font-family:ui-monospace,Menlo,monospace;font-size:15px;font-weight:800;color:var(--mut)}
+  .trow .sec.warn{color:var(--red)}
+  .tbar{height:7px;background:var(--line);border-radius:99px;overflow:hidden}
+  .tfill{height:100%;width:100%;background:var(--green);border-radius:99px;transition:width .1s linear,background .3s}
+  /* question */
+  .qwrap{flex:1;display:flex;flex-direction:column;justify-content:center;padding:6px 16px 12px;gap:12px}
+  .ask{text-align:center;font-size:16px;font-weight:700;color:var(--mut)}
+  .ask b{color:var(--ink)}
+  .opt{border:2px solid var(--line);border-radius:20px;padding:22px 16px;text-align:center;cursor:pointer;background:var(--card);transition:transform .08s,border-color .15s;position:relative}
+  .opt:active{transform:scale(.98)}
+  .opt .expr{font-size:clamp(22px,7vw,30px);font-weight:900;letter-spacing:-1px;line-height:1.22;overflow-wrap:break-word}
+  .opt .expr.long{font-size:clamp(15px,4.4vw,21px);letter-spacing:-.5px}
+  .opt .tag{position:absolute;top:10px;left:14px;font-size:12px;font-weight:800;color:#9CA3AF}
+  .opt .val{display:none;margin-top:8px;font-size:15px;font-weight:800;color:var(--mut)}
+  .opt.reveal .val{display:block}
+  .opt.correct{border-color:var(--green);background:#F0FDF4} .opt.correct .val{color:var(--green)}
+  .opt.wrong{border-color:var(--red);background:#FEF2F2} .opt.wrong .val{color:var(--red)}
+  .vs{text-align:center;font-size:13px;font-weight:900;color:#9CA3AF;letter-spacing:1px}
+  /* screens */
+  .screen{position:absolute;inset:0;background:var(--card);z-index:30;display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:32px}
+  .screen.show{display:flex;animation:fade .35s}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .screen .emo{font-size:64px;margin-bottom:6px}
+  .screen h1{font-size:26px;font-weight:900;margin:0 0 8px;letter-spacing:-.5px}
+  .screen p{font-size:15px;color:var(--mut);margin:0 0 6px;line-height:1.55}
+  .screen .tot{font-size:15px;color:var(--mut);margin:6px 0 22px}
+  .screen .tot b{color:var(--gold);font-size:26px;font-weight:900}
+  .cta{background:var(--ink);color:#fff;border:none;border-radius:16px;padding:17px 40px;font-size:17px;font-weight:800;cursor:pointer;width:100%;max-width:280px}
+  .cta:active{opacity:.85}
+  .ghost{background:none;border:none;color:var(--mut);font-size:14px;font-weight:600;margin-top:16px;cursor:pointer;text-decoration:underline}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top">
+    <div class="goal"><span class="lbl">🎯 더 큰 수 찾기 · 20,000P</span><span class="pts"><b id="pts">0</b><span class="g"> / 20,000P</span></span></div>
+    <div class="pbar"><div class="pfill" id="pfill"></div></div>
+    <div class="dots" id="dots"></div>
+  </div>
+  <div class="timer">
+    <div class="trow"><span class="stg" id="stg">1단계</span><span class="sec" id="sec">⏱ 20</span></div>
+    <div class="tbar"><div class="tfill" id="tfill"></div></div>
+  </div>
+  <div class="qwrap">
+    <div class="ask"><b>더 큰 수</b>를 고르세요</div>
+    <div class="opt" id="optA" onclick="answer('L')"><span class="tag">A</span><div class="expr" id="exA">—</div><div class="val" id="vA"></div></div>
+    <div class="vs">VS</div>
+    <div class="opt" id="optB" onclick="answer('R')"><span class="tag">B</span><div class="expr" id="exB">—</div><div class="val" id="vB"></div></div>
+  </div>
+
+  <div class="screen show" id="start">
+    <div class="emo">🔢</div>
+    <h1>더 큰 수 찾기</h1>
+    <p>두 식 중 <b>더 큰 쪽</b>을 고르세요.<br>단계마다 <b>20초</b> · 뒤로 갈수록 어려워집니다.</p>
+    <p style="font-size:13.5px;margin-top:10px">전부 맞히면 <b style="color:var(--gold)">20,000P</b></p>
+    <button class="cta" style="margin-top:18px" onclick="start()">시작하기</button>
+  </div>
+
+  <div class="screen" id="final">
+    <div class="emo" id="fEmo">🏁</div>
+    <h1 id="fTitle">완료!</h1>
+    <p id="fSub">10문제 중 <b id="fCorrect">0</b>개 정답</p>
+    <div class="tot">획득 포인트<br><b id="fPts">0P</b></div>
+    <button class="cta" onclick="location.reload()">다시하기</button>
+  </div>
+</div>
+
+<script>
+const M=(s)=>s; // display expr as-is
+const S=[
+ {l:"2",r:"7",lv:2,rv:7,big:"R"},
+ {l:"50",r:"78",lv:50,rv:78,big:"R"},
+ {l:"10+3",r:"10+8",lv:13,rv:18,big:"R"},
+ {l:"10−5",r:"10−1",lv:5,rv:9,big:"R"},
+ {l:"10+5−3",r:"10+10−1",lv:12,rv:19,big:"R"},
+ {l:"(10+3+8)−(7+8)",r:"(10+7+1)−(8+9)",lv:6,rv:1,big:"L"},
+ {l:"100+41−9",r:"200−109",lv:132,rv:91,big:"L"},
+ {l:"1+1+1+1+1+100+9",r:"2+2+2+100+7",lv:114,rv:113,big:"L"},
+ {l:"(5×10)+43−18",r:"(7×10)+30−12",lv:75,rv:88,big:"R"},
+ {l:"10+9+8+6+5−4+3−2−1",r:"10−9+8+7+6−5+4−3+2+1",lv:34,rv:21,big:"L"},
+];
+const PTS=[100,200,300,400,500,1000,2000,3000,5000,7500]; // 합 = 20,000
+const TLIMIT=20;
+let si=0,total=0,correct=0,locked=false,tId=null,left=TLIMIT;
+const $=id=>document.getElementById(id);
+
+function drawDots(){$('dots').innerHTML=S.map((_,i)=>`<div class="d ${i<si?'done':i===si?'on':''}"></div>`).join('');}
+function setPts(v){total=v;$('pts').textContent=v.toLocaleString();$('pfill').style.width=Math.min(100,v/20000*100)+'%';}
+function start(){$('start').classList.remove('show');render();}
+
+function render(){
+  drawDots();
+  const q=S[si];
+  $('stg').textContent=(si+1)+'단계';
+  $('exA').textContent=q.l; $('exB').textContent=q.r;
+  $('exA').className='expr'+(q.l.length>13?' long':''); $('exB').className='expr'+(q.r.length>13?' long':'');
+  $('vA').textContent='= '+q.lv; $('vB').textContent='= '+q.rv;
+  ['optA','optB'].forEach(id=>$(id).className='opt');
+  locked=false;
+  startTimer();
+}
+function startTimer(){
+  clearInterval(tId); left=TLIMIT;
+  $('sec').textContent='⏱ '+TLIMIT; $('sec').classList.remove('warn');
+  $('tfill').style.width='100%'; $('tfill').style.background='var(--green)';
+  tId=setInterval(()=>{
+    left-=0.1;
+    if(left<=0){left=0;clearInterval(tId);timeout();}
+    $('tfill').style.width=(left/TLIMIT*100)+'%';
+    const sec=Math.ceil(left);
+    $('sec').textContent='⏱ '+sec;
+    if(left<=6){$('sec').classList.add('warn');$('tfill').style.background='var(--red)';}
+    else if(left<=12){$('tfill').style.background='#F59E0B';}
+  },100);
+}
+function answer(side){ if(locked)return; resolve(side); }
+function timeout(){ if(locked)return; resolve(null); }
+function resolve(side){
+  locked=true; clearInterval(tId);
+  const q=S[si], ok=side===q.big;
+  const bigId = q.big==='L'?'optA':'optB';
+  const pickId = side==='L'?'optA':side==='R'?'optB':null;
+  $(bigId).classList.add('reveal');
+  $('optA').classList.add('reveal'); $('optB').classList.add('reveal');
+  $(bigId).classList.add('correct');
+  if(pickId && !ok) $(pickId).classList.add('wrong');
+  if(ok){ correct++; setPts(total+PTS[si]); }
+  setTimeout(()=>{ si++; if(si<S.length) render(); else finish(); }, 1050);
+}
+function finish(){
+  drawDots();
+  $('fCorrect').textContent=correct;
+  $('fPts').textContent=total.toLocaleString()+'P';
+  $('fEmo').textContent = correct===10?'🏆': correct>=7?'🎉':'🏁';
+  $('fTitle').textContent = correct===10?'전부 정답! 20,000P!': '완료!';
+  $('final').classList.add('show');
+}
+drawDots();
+</script>
+</body>
+</html>
