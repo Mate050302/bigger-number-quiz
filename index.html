@@ -54,12 +54,21 @@
   .cta{background:var(--ink);color:#fff;border:none;border-radius:16px;padding:17px 40px;font-size:17px;font-weight:800;cursor:pointer;width:100%;max-width:280px}
   .cta:active{opacity:.85}
   .ghost{background:none;border:none;color:var(--mut);font-size:14px;font-weight:600;margin-top:16px;cursor:pointer;text-decoration:underline}
+  /* reward popup */
+  .rlabel{font-size:14px;color:var(--mut);font-weight:700;margin-bottom:4px}
+  .rplus{font-size:56px;font-weight:900;color:var(--gold);letter-spacing:-1.5px;line-height:1}
+  .rtot{font-size:15px;color:var(--mut);margin:10px 0 28px}.rtot b{color:var(--ink);font-size:18px}
+  .cta.big{background:linear-gradient(90deg,#F59E0B,#D97706);box-shadow:0 7px 0 #B45309;font-size:18px;padding:21px 18px;line-height:1.3;animation:pulse 1.35s ease-in-out infinite}
+  .cta.big:active{transform:translateY(4px);box-shadow:0 3px 0 #B45309;animation:none}
+  @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.035)}}
+  .quit{background:none;border:none;color:#CBD0D6;font-size:12px;font-weight:500;margin-top:26px;cursor:pointer;text-decoration:underline}
+  .quit:active{color:#AEB4BB}
 </style>
 </head>
 <body>
 <div class="app">
   <div class="top">
-    <div class="goal"><span class="lbl">🎯 더 큰 수 찾기 · 20,000P</span><span class="pts"><b id="pts">0</b><span class="g"> / 20,000P</span></span></div>
+    <div class="goal"><span class="lbl">🎯 더 큰 수 찾기</span><span class="pts"><b id="pts">0</b><span class="g"> / 16,800P</span></span></div>
     <div class="pbar"><div class="pfill" id="pfill"></div></div>
     <div class="dots" id="dots"></div>
   </div>
@@ -78,8 +87,17 @@
     <div class="emo">🔢</div>
     <h1>더 큰 수 찾기</h1>
     <p>두 식 중 <b>더 큰 쪽</b>을 고르세요.<br>단계마다 <b>20초</b> · 뒤로 갈수록 어려워집니다.</p>
-    <p style="font-size:13.5px;margin-top:10px">전부 맞히면 <b style="color:var(--gold)">20,000P</b></p>
+    <p style="font-size:13.5px;margin-top:10px">단계마다 포인트 적립 · 다 풀면 <b style="color:var(--gold)">16,800P</b></p>
     <button class="cta" style="margin-top:18px" onclick="start()">시작하기</button>
+  </div>
+
+  <div class="screen" id="reward">
+    <div class="emo">🎉</div>
+    <div class="rlabel" id="rLabel">1단계 클리어 · 적립!</div>
+    <div class="rplus" id="rPlus">+100P</div>
+    <div class="rtot">지금까지 <b id="rTot">100P</b></div>
+    <button class="cta big" id="rNext">다음 단계도 풀고 200P 받기 →</button>
+    <button class="quit" id="rQuit">그만두기</button>
   </div>
 
   <div class="screen" id="final">
@@ -105,13 +123,14 @@ const S=[
  {l:"(5×10)+43−18",r:"(7×10)+30−12",lv:75,rv:88,big:"R"},
  {l:"10+9+8+6+5−4+3−2−1",r:"10−9+8+7+6−5+4−3+2+1",lv:34,rv:21,big:"L"},
 ];
-const PTS=[100,200,300,400,500,1000,2000,3000,5000,7500]; // 합 = 20,000
+const PTS=[100,200,300,400,500,600,700,2000,4000,8000]; // 합 = 16,800
+const GOALP=16800;
 const TLIMIT=20;
 let si=0,total=0,correct=0,locked=false,tId=null,left=TLIMIT;
 const $=id=>document.getElementById(id);
 
 function drawDots(){$('dots').innerHTML=S.map((_,i)=>`<div class="d ${i<si?'done':i===si?'on':''}"></div>`).join('');}
-function setPts(v){total=v;$('pts').textContent=v.toLocaleString();$('pfill').style.width=Math.min(100,v/20000*100)+'%';}
+function setPts(v){total=v;$('pts').textContent=v.toLocaleString();$('pfill').style.width=Math.min(100,v/GOALP*100)+'%';}
 function start(){$('start').classList.remove('show');render();}
 
 function render(){
@@ -150,9 +169,27 @@ function resolve(side){
   $('optA').classList.add('reveal'); $('optB').classList.add('reveal');
   $(bigId).classList.add('correct');
   if(pickId && !ok) $(pickId).classList.add('wrong');
-  if(ok){ correct++; setPts(total+PTS[si]); }
-  setTimeout(()=>{ si++; if(si<S.length) render(); else finish(); }, 1050);
+  if(ok) correct++;
+  setPts(total+PTS[si]);            // 단계마다 적립 (참여 보상)
+  setTimeout(showReward, 1000);
 }
+function showReward(){
+  const last=si===S.length-1;
+  $('rLabel').textContent=(si+1)+'단계 클리어 · 적립!';
+  $('rPlus').textContent='+'+PTS[si].toLocaleString()+'P';
+  $('rTot').textContent=total.toLocaleString()+'P';
+  if(last){
+    $('rNext').textContent='🏆 완료! '+total.toLocaleString()+'P 받기';
+    $('rNext').onclick=quit; $('rQuit').style.display='none';
+  }else{
+    $('rNext').textContent='다음 단계도 풀고 '+PTS[si+1].toLocaleString()+'P 받기 →';
+    $('rNext').onclick=goNext; $('rQuit').style.display='';
+  }
+  $('reward').classList.add('show');
+}
+function goNext(){ $('reward').classList.remove('show'); si++; if(si<S.length) render(); else finish(); }
+function quit(){ $('reward').classList.remove('show'); finish(); }
+$('rQuit').onclick=quit;
 function finish(){
   drawDots();
   $('fCorrect').textContent=correct;
