@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<title>OX 퀴즈 풀고 10,000원 받기</title>
+<title>건강 OX 퀴즈 풀고 10,000원 받기</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <style>
   :root{--blue:#2563EB;--blue-d:#1D4ED8;--red:#DC2626;--green:#16A34A;--ink:#111827;--mut:#6B7280;--line:#E5E7EB;--bg:#F3F4F6;--card:#FFFFFF;--gold:#D97706}
@@ -97,7 +97,7 @@
 <body>
 <div class="app">
   <div class="top">
-    <div class="goal"><span class="lbl">🧠 상식 OX · 10,000원</span><span class="pts"><b id="pts">0</b><span class="g"> / 10,000원</span></span></div>
+    <div class="goal"><span class="lbl">🩺 건강 OX · 10,000원</span><span class="pts"><b id="pts">0</b><span class="g"> / 10,000원</span></span></div>
     <div class="dots" id="dots"></div>
   </div>
   <div class="timer">
@@ -122,10 +122,10 @@
       <span style="top:70%;left:9%;transform:rotate(7deg);color:#DC2626">X</span>
       <span style="top:80%;right:9%;transform:rotate(-8deg);color:#2563EB">O</span>
     </div>
-    <div class="emo">🧠</div>
-    <div class="s-eye2">OX 퀴즈! 내 상식력은?</div>
-    <h1 class="s-title">OX 퀴즈 풀고<br><span class="gold">10,000원</span> 받기</h1>
-    <div class="s-sub2">쉬운 O·X만 맞히면 받는다 💰</div>
+    <div class="emo">🩺</div>
+    <div class="s-eye2">건강 OX! 내 건강 상식은?</div>
+    <h1 class="s-title">건강 OX 풀고<br><span class="gold">10,000원</span> 받기</h1>
+    <div class="s-sub2">쉬운 건강 O·X만 맞히면 받는다 💰</div>
     <div class="s-proof">🔥 지금 <b>3,127명</b> 도전 중</div>
     <button class="cta big" style="max-width:300px" onclick="start()">시작하기</button>
   </div>
@@ -219,7 +219,7 @@ function resolve(ans){
   if(ok){ correct++; setPts(total+PTS[si]); showPraise(); setTimeout(showReward,1100); }
   else { setTimeout(showShare,1000); }   // 틀리면 공유 게이트 (적립 X)
 }
-const PRAISE=["와 잘하는데! 🎉","천재인데?! 🧠","상식 팽팽! ⚡","완벽해요! 👏","상식왕 등극 👑","눈썰미 최고! 👀","척척박사 인정 🎓","오 정확해요! ✅"];
+const PRAISE=["와 잘하는데! 🎉","건강 박사인데?! 🩺","건강 상식 척척! ⚡","완벽해요! 👏","건강상식왕 등극 👑","눈썰미 최고! 👀","척척박사 인정 🎓","오 정확해요! ✅"];
 function showPraise(){
   const el=$('praise'); el.textContent=PRAISE[Math.floor(Math.random()*PRAISE.length)];
   el.classList.remove('show'); void el.offsetWidth; el.classList.add('show');
@@ -255,7 +255,7 @@ function showShare(){
 }
 function doShare(){
   const url=location.href.split('?')[0];
-  const d={title:'OX 퀴즈 풀고 10,000원 받기',text:`나 ${total.toLocaleString()}원 모았어! 너도 도전 🔥`,url};
+  const d={title:'건강 OX 퀴즈 풀고 10,000원 받기',text:`나 건강 OX로 ${total.toLocaleString()}원 모았어! 너도 도전 🔥`,url};
   const reveal=()=>{ $('sBtn').style.display='none'; $('sDone').style.display=''; };
   try{
     if(navigator.share){ $('sBtn').disabled=true; $('sBtn').textContent='공유 창 열림…'; navigator.share(d).then(reveal).catch(reveal); }
